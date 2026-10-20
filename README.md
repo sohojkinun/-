@@ -1,1 +1,472 @@
-# -
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sohojkinun - সহজেই কিনুন</title>
+  <style>
+    :root {
+      --primary-color: #0d9488;
+      --secondary-color: #f97316;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-color: #1e293b;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 50px; font-size: 16px; }
+    
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #0d9488, #0f766e);
+      color: white; padding: 20px; text-align: center;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    header h1 { font-size: 28px; font-weight: 700; margin-bottom: 5px; }
+    header p { font-size: 16px; opacity: 0.95; }
+
+    /* Main Container */
+    .container { max-width: 1100px; margin: 25px auto; padding: 0 15px; }
+
+    /* Product Grid */
+    .product-grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+      gap: 25px; 
+      margin-bottom: 30px;
+    }
+    
+    /* Product Card */
+    .product-card {
+      background: var(--card-bg); border-radius: 14px; overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08); padding: 18px; display: flex; flex-direction: column;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* Gallery Section */
+    .gallery-container { width: 100%; margin-bottom: 15px; }
+    .main-img-box {
+      width: 100%; height: 320px; border-radius: 10px; overflow: hidden;
+      background: #f1f5f9; display: flex; align-items: center; justify-content: center;
+      position: relative; cursor: zoom-in;
+    }
+    .main-img-box img { width: 100%; height: 100%; object-fit: contain; transition: 0.3s ease; }
+    .zoom-hint {
+      position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.6);
+      color: white; padding: 4px 8px; border-radius: 6px; font-size: 12px; pointer-events: none;
+    }
+    
+    .thumbnail-row {
+      display: flex; gap: 10px; margin-top: 10px; overflow-x: auto; padding-bottom: 5px;
+    }
+    .thumbnail-row::-webkit-scrollbar { height: 6px; }
+    .thumbnail-row::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    
+    .thumb-img {
+      width: 60px; height: 60px; border-radius: 8px; object-fit: cover; cursor: pointer;
+      border: 2px solid transparent; opacity: 0.6; transition: 0.2s; flex-shrink: 0;
+    }
+    .thumb-img.active, .thumb-img:hover { border-color: var(--primary-color); opacity: 1; transform: scale(1.05); }
+
+    /* Product Details */
+    .product-title { font-size: 22px; font-weight: 700; margin-bottom: 10px; color: #0f172a; }
+    .price-box { margin-bottom: 12px; }
+    .price { font-size: 24px; font-weight: 700; color: var(--primary-color); }
+    .sale-price { font-size: 16px; color: #94a3b8; text-decoration: line-through; margin-left: 10px; }
+    
+    .desc { 
+      font-size: 15px; color: #334155; margin-bottom: 18px; line-height: 1.6; 
+      flex-grow: 1; white-space: pre-line; 
+    }
+
+    .add-cart-btn {
+      background: var(--primary-color); color: white; border: none; padding: 14px;
+      width: 100%; border-radius: 10px; font-weight: 600; font-size: 16px; cursor: pointer;
+      transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px;
+    }
+    .add-cart-btn:hover { background: #0f766e; }
+
+    /* Permanent Bottom Checkout Section */
+    .checkout-section {
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      margin-top: 20px;
+    }
+    .checkout-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Cart Item Row */
+    .cart-item-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 0; border-bottom: 1px dashed #e2e8f0; font-size: 17px;
+    }
+    .cart-item-row strong { font-size: 18px; color: #0f172a; }
+    .cart-item-row small { font-size: 15px !important; color: #475569 !important; font-weight: 500; }
+    .qty-btn {
+      background: #e2e8f0; border: none; width: 32px; height: 32px; border-radius: 6px;
+      font-weight: bold; cursor: pointer; font-size: 18px; margin: 0 6px;
+    }
+    .qty-btn:hover { background: #cbd5e1; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    .form-group { margin-bottom: 12px; position: relative; }
+    .form-group label { display: block; font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .form-group input, .form-group textarea {
+      width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 16px;
+    }
+
+    /* Inline Inline Error Notice */
+    .error-msg {
+      color: #e11d48;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .submit-btn {
+      background: var(--secondary-color); color: white; border: none; padding: 15px;
+      width: 100%; border-radius: 10px; font-weight: 700; font-size: 18px; cursor: pointer; margin-top: 15px;
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+      transition: 0.2s;
+    }
+    .submit-btn:hover { background: #ea580c; }
+
+    /* Image Lightbox (Zoom Modal) */
+    .lightbox {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9); z-index: 300; justify-content: center; align-items: center;
+    }
+    .lightbox img { max-width: 90%; max-height: 85vh; border-radius: 10px; object-fit: contain; }
+    .lightbox-close {
+      position: absolute; top: 20px; right: 25px; color: white; font-size: 35px;
+      cursor: pointer; font-weight: bold;
+    }
+
+    /* Custom Success Modal */
+    .success-modal {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7); z-index: 400; justify-content: center; align-items: center; padding: 20px;
+    }
+    .success-content {
+      background: white; width: 100%; max-width: 420px; border-radius: 20px; padding: 30px;
+      text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); animation: popUp 0.3s ease;
+    }
+    @keyframes popUp {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .success-icon { font-size: 60px; margin-bottom: 15px; }
+    .success-title { font-size: 24px; font-weight: 700; color: #0f766e; margin-bottom: 10px; }
+    .success-text { font-size: 16px; color: #475569; margin-bottom: 20px; line-height: 1.5; }
+    .success-btn {
+      background: var(--primary-color); color: white; border: none; padding: 12px 25px;
+      border-radius: 10px; font-weight: 600; font-size: 16px; cursor: pointer; width: 100%;
+    }
+    .success-btn:hover { background: #0f766e; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>সহজেই কিনুন (Sohojkinun)</h1>
+    <p>অনলাইন কেনাকাটা এখন আরও সহজ!</p>
+  </header>
+
+  <div class="container">
+    <div id="product-list" class="product-grid">
+      <p style="text-align:center; grid-column: 1/-1; font-size: 18px; color: #64748b; padding: 40px;">পণ্য লোড হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</p>
+    </div>
+
+    <div class="checkout-section" id="checkoutSection">
+      <div class="checkout-title">
+        <span>🛒 আপনার অর্ডার ও চেকআউট কাউন্টার</span>
+        <span style="font-size: 17px; color: var(--primary-color);">মোট আইটেম: <span id="cart-count">0</span> টি</span>
+      </div>
+
+      <div style="background: #f8fafc; padding: 18px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #e2e8f0;">
+        <strong style="font-size: 17px; color: #0f172a; display: block; margin-bottom: 10px;">নির্বাচিত পণ্যের তালিকা:</strong>
+        <div id="cart-items-container">
+          <p style="color: #64748b; font-style: italic; font-size: 16px;">এখনো কোনো পণ্য কার্টে যোগ করা হয়নি। ওপরে থেকে "Add to Cart" বাটনে ক্লিক করুন।</p>
+        </div>
+        <hr style="margin: 15px 0; border: none; border-top: 1px solid #cbd5e1;">
+        <div style="display: flex; justify-content: space-between; font-size: 20px; font-weight: 700;">
+          <span>সর্বমোট প্রদেয় মূল্য:</span>
+          <span style="color: var(--primary-color);">৳<span id="cart-total">0</span></span>
+        </div>
+      </div>
+
+      <form id="orderForm" onsubmit="submitOrder(event)">
+        <h3 style="font-size: 19px; margin-bottom: 14px; color: #334155;">ডেলিভারির জন্য আপনার তথ্য দিন:</h3>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label>আপনার নাম *</label>
+            <input type="text" id="custName" required placeholder="যেমন: মোঃ রহিম">
+          </div>
+          <div class="form-group">
+            <label>মোবাইল নম্বর (১১ ডিজিট) *</label>
+            <input type="tel" id="custPhone" required maxlength="11" placeholder="01XXXXXXXXX" 
+                   oninput="this.value = this.value.replace(/[^0-9]/g, ''); hidePhoneError();">
+            <div class="error-msg" id="phoneError">⚠️ সঠিক ১১ ডিজিটের বাংলাদেশী মোবাইল নম্বর দিন (যেমন: 01712345678)</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>সম্পূর্ণ ঠিকানা (বাসা/রোড, থানা, জেলা) *</label>
+          <textarea id="custAddress" rows="3" required placeholder="আপনার সম্পূর্ণ ঠিকানা এখানে লিখুন..."></textarea>
+        </div>
+
+        <div class="error-msg" id="cartError" style="font-size: 15px; margin-bottom: 10px;">⚠️ অন্তত একটি পণ্য কার্টে যোগ করুন!</div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">অর্ডার কনফার্ম করুন (ক্যাশ অন ডেলিভারি)</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="lightbox" id="lightbox" onclick="closeZoom()">
+    <span class="lightbox-close">&times;</span>
+    <img id="zoom-img" src="">
+  </div>
+
+  <div class="success-modal" id="successModal">
+    <div class="success-content">
+      <div class="success-icon">🎉</div>
+      <div class="success-title">অর্ডার সফল হয়েছে!</div>
+      <div class="success-text">অভিনন্দন! আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে। খুব শীঘ্রই আমরা আপনার সাথে যোগাযোগ করব।</div>
+      <button class="success-btn" onclick="closeSuccessModal()">ঠিক আছে</button>
+    </div>
+  </div>
+
+  <script>
+    // ⚠️ নিচে আপনার Google Apps Script Web App এর URL লিঙ্কটি দিন
+    const APPS_SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL"; 
+
+    let cartMap = {};
+
+    window.onload = function() {
+      if (typeof google !== 'undefined' && google.script) {
+        google.script.run.withSuccessHandler(renderProducts).getProducts();
+      } else if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
+        fetch(APPS_SCRIPT_URL + "?action=getProducts")
+          .then(res => res.json())
+          .then(data => renderProducts(data))
+          .catch(err => {
+            console.error(err);
+            document.getElementById('product-list').innerHTML = '<p style="text-align:center; grid-column: 1/-1; color:#e11d48;">পণ্য লোড করতে সমস্যা হয়েছে!</p>';
+          });
+      } else {
+        // যদি এখনও URL বসানো না থাকে, ওয়েবসাইট টেস্ট করার জন্য ডেমো পণ্য দেখানো হচ্ছে
+        renderProducts([
+          {
+            name: "Airbuds Pro",
+            price: 1200,
+            salePrice: 1500,
+            description: "উন্নত মানের সাউন্ড এবং লং ব্যাটারি ব্যাকআপ সহ ব্লুটুথ এয়ারবাডস।",
+            images: ["https://via.placeholder.com/300"]
+          }
+        ]);
+      }
+    };
+
+    function renderProducts(products) {
+      const container = document.getElementById('product-list');
+      container.innerHTML = '';
+
+      if (!products || products.length === 0) {
+        container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; font-size: 18px; color: #e11d48; padding: 30px;">কোনো পণ্য পাওয়া যায়নি! গুগল শিটে পণ্য যোগ করুন।</p>';
+        return;
+      }
+
+      products.forEach((prod, index) => {
+        let mainImg = (prod.images && prod.images.length > 0) ? prod.images[0] : 'https://via.placeholder.com/300';
+        
+        let thumbnailsHtml = '';
+        if(prod.images && prod.images.length > 0) {
+          prod.images.forEach((img, i) => {
+            thumbnailsHtml += `<img src="${img}" class="thumb-img ${i===0?'active':''}" onclick="changeImage(this, 'main-${index}')">`;
+          });
+        }
+
+        let card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <div class="gallery-container">
+            <div class="main-img-box" onclick="zoomImage('main-${index}')">
+              <img id="main-${index}" src="${mainImg}">
+              <span class="zoom-hint">🔍 ক্লিক করে বড় করুন</span>
+            </div>
+            <div class="thumbnail-row">${thumbnailsHtml}</div>
+          </div>
+          <div class="product-title">${prod.name}</div>
+          <div class="price-box">
+            <span class="price">৳${prod.price}</span>
+            ${prod.salePrice ? `<span class="sale-price">৳${prod.salePrice}</span>` : ''}
+          </div>
+          <div class="desc">${prod.description || ''}</div>
+          <button class="add-cart-btn" onclick="addToCart('${prod.name}', ${prod.price})">🛒 Add to Cart</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function changeImage(thumb, mainId) {
+      document.getElementById(mainId).src = thumb.src;
+      let siblings = thumb.parentElement.children;
+      for(let sib of siblings) sib.classList.remove('active');
+      thumb.classList.add('active');
+    }
+
+    function zoomImage(mainId) {
+      let src = document.getElementById(mainId).src;
+      document.getElementById('zoom-img').src = src;
+      document.getElementById('lightbox').style.display = 'flex';
+    }
+    function closeZoom() {
+      document.getElementById('lightbox').style.display = 'none';
+    }
+
+    function addToCart(name, price) {
+      if(cartMap[name]) {
+        cartMap[name].qty += 1;
+      } else {
+        cartMap[name] = { price: price, qty: 1 };
+      }
+      updateCartUI();
+      document.getElementById('cartError').style.display = 'none';
+      document.getElementById('checkoutSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function changeQty(name, delta) {
+      if(cartMap[name]) {
+        cartMap[name].qty += delta;
+        if(cartMap[name].qty <= 0) {
+          delete cartMap[name];
+        }
+      }
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      let totalQty = 0;
+      let totalPrice = 0;
+      let itemsHtml = '';
+
+      for(let name in cartMap) {
+        let item = cartMap[name];
+        totalQty += item.qty;
+        let itemTotal = item.price * item.qty;
+        totalPrice += itemTotal;
+
+        itemsHtml += `
+          <div class="cart-item-row">
+            <div>
+              <strong>${name}</strong><br>
+              <small>৳${item.price} × ${item.qty} = ৳${itemTotal}</small>
+            </div>
+            <div>
+              <button class="qty-btn" onclick="changeQty('${name}', -1)">-</button>
+              <span style="font-weight:bold; margin: 0 8px; font-size: 18px;">${item.qty}</span>
+              <button class="qty-btn" onclick="changeQty('${name}', 1)">+</button>
+            </div>
+          </div>
+        `;
+      }
+
+      document.getElementById('cart-count').innerText = totalQty;
+      document.getElementById('cart-total').innerText = totalPrice;
+      document.getElementById('cart-items-container').innerHTML = itemsHtml || '<p style="color:#64748b; font-style: italic; font-size: 16px;">এখনো কোনো পণ্য কার্টে যোগ করা হয়নি। ওপরে থেকে "Add to Cart" বাটনে ক্লিক করুন।</p>';
+    }
+
+    function hidePhoneError() {
+      document.getElementById('phoneError').style.display = 'none';
+    }
+
+    function submitOrder(e) {
+      e.preventDefault();
+      
+      let phone = document.getElementById('custPhone').value.trim();
+      let phoneRegex = /^01[3-9]\d{8}$/;
+
+      if (!phoneRegex.test(phone)) {
+        document.getElementById('phoneError').style.display = 'block';
+        document.getElementById('custPhone').focus();
+        return;
+      } else {
+        document.getElementById('phoneError').style.display = 'none';
+      }
+
+      let itemSummaryList = [];
+      for(let name in cartMap) {
+        itemSummaryList.push(name + " (" + cartMap[name].qty + "টি)");
+      }
+
+      if(itemSummaryList.length === 0) {
+        document.getElementById('cartError').style.display = 'block';
+        return;
+      } else {
+        document.getElementById('cartError').style.display = 'none';
+      }
+
+      let btn = document.getElementById('submitBtn');
+      btn.innerText = "অর্ডার প্রসেস হচ্ছে...";
+      btn.disabled = true;
+
+      let orderData = {
+        name: document.getElementById('custName').value,
+        phone: phone,
+        address: document.getElementById('custAddress').value,
+        items: itemSummaryList.join(', '),
+        total: document.getElementById('cart-total').innerText
+      };
+
+      if (typeof google !== 'undefined' && google.script) {
+        google.script.run.withSuccessHandler(handleOrderSuccess).processOrder(orderData);
+      } else if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
+        fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderData)
+        }).then(() => handleOrderSuccess());
+      } else {
+        // ডেমো মোডে অর্ডার সাবমিট সিমুলেশন
+        setTimeout(handleOrderSuccess, 1000);
+      }
+    }
+
+    function handleOrderSuccess() {
+      let btn = document.getElementById('submitBtn');
+      document.getElementById('successModal').style.display = 'flex';
+      cartMap = {};
+      updateCartUI();
+      document.getElementById('orderForm').reset();
+      btn.innerText = "অর্ডার কনফার্ম করুন (ক্যাশ অন ডেলিভারি)";
+      btn.disabled = false;
+    }
+
+    function closeSuccessModal() {
+      document.getElementById('successModal').style.display = 'none';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
